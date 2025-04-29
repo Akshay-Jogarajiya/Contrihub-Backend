@@ -13,7 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/leaderboard")
 public class LeaderboardController {
 
 
