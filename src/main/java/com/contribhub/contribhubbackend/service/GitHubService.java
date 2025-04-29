@@ -5,7 +5,6 @@ import com.contribhub.contribhubbackend.model.GitHubUser;
 import com.contribhub.contribhubbackend.repository.GitHubUserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
