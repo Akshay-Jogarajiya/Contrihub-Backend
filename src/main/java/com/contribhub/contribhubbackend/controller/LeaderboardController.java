@@ -1,6 +1,7 @@
 package com.contribhub.contribhubbackend.controller;
 
 import com.contribhub.contribhubbackend.model.GitHubUser;
+import com.contribhub.contribhubbackend.model.StackOverflowUser;
 import com.contribhub.contribhubbackend.repository.GitHubUserRepository;
 import com.contribhub.contribhubbackend.repository.StackOverflowUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,13 @@ public class LeaderboardController {
     public List<GitHubUser> getGitHubLeaderboard() {
         List<GitHubUser> users = gitHubUserRepository.findAll();
         users.sort(Comparator.comparingInt(GitHubUser::getFollowers).reversed());
+        return users;
+    }
+
+    @GetMapping("/stackoverflow")
+    public List<StackOverflowUser> getStackOverflowLeaderboard() {
+        List<StackOverflowUser> users = stackOverflowUserRepository.findAll();
+        users.sort(Comparator.comparingInt(StackOverflowUser::getReputation).reversed());
         return users;
     }
 }
