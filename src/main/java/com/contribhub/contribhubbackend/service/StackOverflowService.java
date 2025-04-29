@@ -1,5 +1,6 @@
 package com.contribhub.contribhubbackend.service;
 
+import com.contribhub.contribhubbackend.dto.StackOverflowResponseDTO;
 import com.contribhub.contribhubbackend.dto.StackOverflowUserDTO;
 import com.contribhub.contribhubbackend.model.StackOverflowUser;
 import com.contribhub.contribhubbackend.repository.StackOverflowUserRepository;
@@ -28,9 +29,10 @@ public class StackOverflowService {
         ResponseEntity<String> response = restTemplate.getForEntity(apiUrl , String.class);
 
         try {
-            StackOverflowUserDTO userDTO = objectMapper.readValue(response.getBody() , StackOverflowUserDTO.class);
+            StackOverflowResponseDTO userResponseDTO = objectMapper.readValue(response.getBody() , StackOverflowResponseDTO.class);
+            StackOverflowUserDTO userDTO = userResponseDTO.getItems().getFirst();
 
-            StackOverflowUser user = new StackOverflowUser(userDTO.getStackOverflowUserId() , userDTO.getReputation());
+            StackOverflowUser user = new StackOverflowUser(stackOverflowUserId , userDTO.getReputation());
             return stackOverflowUserRepository.save(user);
 
         } catch (JsonProcessingException e) {
