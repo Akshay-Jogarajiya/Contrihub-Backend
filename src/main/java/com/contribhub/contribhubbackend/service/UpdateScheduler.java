@@ -1,6 +1,7 @@
 package com.contribhub.contribhubbackend.service;
 
 import com.contribhub.contribhubbackend.model.GitHubUser;
+import com.contribhub.contribhubbackend.model.StackOverflowUser;
 import com.contribhub.contribhubbackend.repository.GitHubUserRepository;
 import com.contribhub.contribhubbackend.repository.StackOverflowUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,11 @@ public class UpdateScheduler {
         List<GitHubUser> gitHubUsers = gitHubUserRepository.findAll();
         for (GitHubUser gitHubUser : gitHubUsers) {
             gitHubService.fetchGitHubUserData(gitHubUser.getUsername());
+        }
+
+        List<StackOverflowUser> stackOverflowUsers = stackOverflowUserRepository.findAll();
+        for (StackOverflowUser stackOverflowUser : stackOverflowUsers) {
+            stackOverflowService.fetchStackOverflowUserData(stackOverflowUser.getStackOverflowUserId());
         }
     }
 }
