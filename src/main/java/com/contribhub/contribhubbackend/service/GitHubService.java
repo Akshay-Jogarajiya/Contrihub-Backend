@@ -6,6 +6,10 @@ import com.contribhub.contribhubbackend.repository.GitHubUserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -14,6 +18,9 @@ import org.springframework.web.client.RestTemplate;
 public class GitHubService {
 
     private final RestTemplate restTemplate = new RestTemplate();
+
+    @Value("${github.token}")
+    private String githubToken;
 
     @Autowired
     GitHubUserRepository gitHubUserRepository;
@@ -24,12 +31,28 @@ public class GitHubService {
     public GitHubUser fetchGitHubUserData(String username) {
         String apiUrl = "https://api.github.com/users/" +username;
 
-        ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "token " + githubToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
 
         try {
+            ResponseEntity<String> response = restTemplate.exchange(
+                    apiUrl,
+                    HttpMethod.GET,
+                    entity,
+                    String.class
+            );
+
             GitHubUserDTO userDTO = objectMapper.readValue(response.getBody() , GitHubUserDTO.class);
 
-            GitHubUser user = new GitHubUser(username , userDTO.getName() , userDTO.getPublic_repos() , userDTO.getFollowers() , userDTO.getFollowing());
+            GitHubUser user = new GitHubUser(
+                    username,
+                    userDTO.getName(),
+                    userDTO.getPublic_repos(),
+                    userDTO.getFollowers(),
+                    userDTO.getFollowing());
+
             return gitHubUserRepository.save(user);
 
         } catch (JsonProcessingException e) {

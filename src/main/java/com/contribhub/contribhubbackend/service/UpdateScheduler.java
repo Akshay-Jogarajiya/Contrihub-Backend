@@ -25,9 +25,9 @@ public class UpdateScheduler {
     @Autowired
     StackOverflowUserRepository stackOverflowUserRepository;
 
-    @Scheduled(fixedRate = 86400000)
+    @Scheduled(fixedRate = 60000)
     public void updateAllUserData() {
-        System.out.println("Scheduler started");
+        System.out.println("Scheduled update started...");
 
         List<GitHubUser> gitHubUsers = gitHubUserRepository.findAll();
         for (GitHubUser gitHubUser : gitHubUsers) {
@@ -38,5 +38,7 @@ public class UpdateScheduler {
         for (StackOverflowUser stackOverflowUser : stackOverflowUsers) {
             stackOverflowService.fetchStackOverflowUserData(stackOverflowUser.getStackOverflowUserId());
         }
+
+        System.out.println("Scheduled update completed.");
     }
 }
