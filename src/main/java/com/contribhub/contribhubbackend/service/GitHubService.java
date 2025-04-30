@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Optional;
+
 @Service
 public class GitHubService {
 
@@ -46,12 +48,25 @@ public class GitHubService {
 
             GitHubUserDTO userDTO = objectMapper.readValue(response.getBody() , GitHubUserDTO.class);
 
-            GitHubUser user = new GitHubUser(
-                    username,
-                    userDTO.getName(),
-                    userDTO.getPublic_repos(),
-                    userDTO.getFollowers(),
-                    userDTO.getFollowing());
+            Optional<GitHubUser> optionalUser = gitHubUserRepository.findByUsername(username);
+            GitHubUser user;
+
+            if (optionalUser.isPresent()) {
+
+                user = optionalUser.get();
+                user.setUsername(username);
+                user.setName(userDTO.getName());
+                user.setPublicRepos(userDTO.getPublic_repos());
+                user.setFollowers(userDTO.getFollowers());
+                user.setFollowing(userDTO.getFollowing());
+            } else {
+                user = new GitHubUser(
+                        username,
+                        userDTO.getName(),
+                        userDTO.getPublic_repos(),
+                        userDTO.getFollowers(),
+                        userDTO.getFollowing());
+            }
 
             return gitHubUserRepository.save(user);
 
