@@ -42,8 +42,8 @@ A Java Spring Boot project that tracks and ranks developers based on their open-
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/contribhub.git
-   cd contribhub
+   git clone [https://github.com/your-username/contribhub.git](https://github.com/Akshay-Jogarajiya/Contrihub-Backend.git)
+   cd Contrihub-Backend
 2. Set up PostgreSQL database and update application.properties.
 3. Run the Spring Boot application:
    ```bash
