@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Optional;
+
 @Service
 public class StackOverflowService {
 
@@ -29,10 +31,23 @@ public class StackOverflowService {
         ResponseEntity<String> response = restTemplate.getForEntity(apiUrl , String.class);
 
         try {
-            StackOverflowResponseDTO userResponseDTO = objectMapper.readValue(response.getBody() , StackOverflowResponseDTO.class);
+            StackOverflowResponseDTO userResponseDTO = objectMapper.readValue(response.getBody(),
+                    StackOverflowResponseDTO.class);
             StackOverflowUserDTO userDTO = userResponseDTO.getItems().getFirst();
 
-            StackOverflowUser user = new StackOverflowUser(stackOverflowUserId , userDTO.getReputation());
+            Optional<StackOverflowUser> optionalUser = stackOverflowUserRepository.findByStackOverflowUserId(stackOverflowUserId);
+            StackOverflowUser user;
+
+            if (optionalUser.isPresent()) {
+
+                user = optionalUser.get();
+                user.setStackOverflowUserId(stackOverflowUserId);
+                user.setReputation(userDTO.getReputation());
+            } else {
+
+                user = new StackOverflowUser(stackOverflowUserId , userDTO.getReputation());
+            }
+
             return stackOverflowUserRepository.save(user);
 
         } catch (JsonProcessingException e) {
